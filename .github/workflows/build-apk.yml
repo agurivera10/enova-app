@@ -38,6 +38,11 @@ jobs:
         shell: bash
         run: |
           test "$(wc -l < app/src/main/assets/sports_channels.tsv)" -eq 108
+      - name: Preparar logos desde iptv-org
+        shell: bash
+        run: |
+          python3 -m unittest discover -s scripts -p "test_*.py"
+          python3 scripts/build_logos.py
       - name: Test and build
         run: gradle --no-daemon testDebugUnitTest assembleDebug
       - name: Upload debug APK

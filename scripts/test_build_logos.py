@@ -5,9 +5,9 @@ from scripts.build_logos import country_for, generate, normalize
 class LogoMappingTest(unittest.TestCase):
     def test_normalize_and_region(self):
         self.assertEqual(normalize("TyC Spórts"), "tycsports")
-        self.assertEqual(country_for("ESPN", "espnmx"), "AR")
+        self.assertEqual(country_for("ESPN", "espnmx"), "MX")
         self.assertEqual(country_for("ESPN", "espn_usa"), "US")
-        self.assertEqual(country_for("ESPN 2", "espn2mx"), "AR")
+        self.assertEqual(country_for("ESPN 2", "espn2mx"), "MX")
         self.assertEqual(country_for("ESPN", "espn_mx"), "MX")
 
     def test_raster_matching(self):

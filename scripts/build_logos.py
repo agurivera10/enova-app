@@ -31,6 +31,8 @@ def country_for(name, slug):
     for suffix, code in suffixes.items():
         if slug.endswith(suffix):
             return code
+    if slug.endswith("mx") and (slug.startswith("espn") or slug.startswith("foxsports")):
+        return "MX"
     special = {
         "premiere": "BR", "sportv": "BR", "sporttv": "PT",
         "eleven": "PT", "dazn": "ES", "sky_bundesliga": "DE",
@@ -62,7 +64,7 @@ def select_logo(channel, images):
     options = [
         image for image in images
         if image.get("in_use") is not False
-        and image.get("format", "").upper() in SUPPORTED
+        and (image.get("format") or "").upper() in SUPPORTED
         and isinstance(image.get("url"), str)
         and image["url"].startswith("https://")
     ]
