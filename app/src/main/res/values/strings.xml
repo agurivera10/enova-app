@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Enova IPTV</string>
+    <string name="subtitle">Tus listas M3U · Google TV</string>
+    <string name="url_hint">Pegá la URL de tu lista M3U</string>
+    <string name="load_url">Cargar URL</string>
+    <string name="load_file">Abrir archivo</string>
+    <string name="categories">Categorías</string>
+    <string name="only_favorites">Solo favoritos</string>
+    <string name="star_channel">☆ Favorito seleccionado</string>
+    <string name="empty_state">Agregá una lista M3U para comenzar.</string>
+    <string name="channel_logo">Logotipo del canal</string>
+</resources>
