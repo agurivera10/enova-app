@@ -62,7 +62,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v0.1.0-build.${GITHUB_RUN_NUMBER}"
-          gh release create "$TAG" "apk/app-debug.apk#Enova-IPTV.apk" \
+          mv "apk/app-debug.apk" "apk/Enova-IPTV.apk"
+          gh release create "$TAG" "apk/Enova-IPTV.apk" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Enova IPTV · versión de prueba #${GITHUB_RUN_NUMBER}" \
