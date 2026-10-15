@@ -34,6 +34,10 @@ jobs:
           test -n "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
+      - name: Verificar catálogo deportivo
+        shell: bash
+        run: |
+          test "$(wc -l < app/src/main/assets/sports_channels.tsv)" -eq 108
       - name: Test and build
         run: gradle --no-daemon testDebugUnitTest assembleDebug
       - name: Upload debug APK

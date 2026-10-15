@@ -73,7 +73,7 @@ class MainActivity : Activity() {
         rebuildGroups()
 
         findViewById<Button>(R.id.openSports).setOnClickListener {
-            startActivity(Intent(this, SportsActivity::class.java))
+            startActivity(Intent(this, SportsCatalogActivity::class.java))
         }
         importButton.setOnClickListener { importUrl() }
         fileButton.setOnClickListener { chooseFile() }

@@ -115,7 +115,10 @@ class SportsActivity : Activity() {
         }
 
         agendaButton.setOnClickListener { showSection(true) }
-        channelsButton.setOnClickListener { showSection(false) }
+        channelsButton.setOnClickListener {
+            startActivity(Intent(this, SportsCatalogActivity::class.java))
+            finish()
+        }
         findViewById<Button>(R.id.sportsReloadButton).setOnClickListener { webView.reload() }
         findViewById<Button>(R.id.sportsBrowserButton).setOnClickListener { openExternalBrowser() }
         findViewById<Button>(R.id.sportsBackButton).setOnClickListener { finish() }

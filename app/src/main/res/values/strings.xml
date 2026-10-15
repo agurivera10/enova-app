@@ -16,6 +16,9 @@
     <string name="sports_reload">Actualizar</string>
     <string name="sports_browser">Abrir en navegador</string>
     <string name="sports_back">Volver a IPTV</string>
+    <string name="catalog_title">⚽ Canales deportivos</string>
+    <string name="catalog_search">Buscar canal…</string>
+    <string name="catalog_select">Elegí un canal para abrir directamente su página.</string>
     <string name="sports_initial">Elegí Agenda o Canales para consultar TVF90.</string>
     <string name="sports_loading">Cargando página web…</string>
     <string name="sports_failed">No se pudo cargar TVF90. Comprobá la conexión o abrí la página en el navegador.</string>

@@ -10,7 +10,8 @@ Reproductor IPTV **para Google TV / Android TV** desarrollado en Kotlin. Proyect
 - Reproducir canales con AndroidX Media3 (HLS y formatos progresivos compatibles).
 - Guardar la última lista y los favoritos en el dispositivo.
 - Sin servidor propio, cuentas ni canales empaquetados: las opciones sugeridas son solo enlaces externos.
-- Nueva sección **Deportes**: abre `https://tvf90.com/` y `https://tvf90.com/agenda.html` en una vista web dentro de la app, con navegación mediante control remoto, botón de actualización y alternativa para abrir el navegador del televisor.
+- Nueva sección **Deportes**: catálogo de **108 enlaces por canal** extraídos por el usuario de la página TVF90. Seleccionás un canal desde la app y se abre su URL `https://tvf90.com/online.php?stream=...` **sin pasar por la página principal**. Incluye búsqueda, navegación con control remoto, pantalla completa HTML5 cuando el sitio la admite y alternativa al navegador del televisor.
+- Botón **Agenda deportiva**: muestra `https://tvf90.com/agenda.html` en la app. Los 108 enlaces están almacenados como metadatos en `app/src/main/assets/sports_channels.tsv`, no como streams multimedia.
 - Mientras la sección **Agenda** está visible, vuelve a cargar la página cada **2 minutos**. No es sincronización de datos en tiempo real ni garantiza cambios de agenda; depende de lo que publique el sitio de origen. La vista **Canales** no se recarga automáticamente para no interrumpir la reproducción.
 
 ## Obtener la APK sin Android Studio
@@ -61,7 +62,8 @@ El proyecto utiliza Media3 1.8.1 y Glide 4.16.0.
 - El usuario debe elegir una lista y pulsar **Cargar URL** antes de que se descargue; la aplicación no solicita todas las listas automáticamente.
 - Límite de importación: 12 MB de texto M3U y 20.000 canales. Algunas listas extensas pueden superar esos límites, especialmente en televisores con poca memoria.
 - No incluye EPG estructurada, DRM, Chromecast ni descarga de emisiones. La nueva agenda deportiva es una **página web externa** y no cruza automáticamente partidos con URLs M3U.
-- La función Deportes no extrae, inspecciona ni reproduce por Media3 las URLs de transmisión de TVF90; muestra su sitio web como tal. Algunas páginas o reproductores externos podrían no funcionar en el WebView de Google TV, y en ese caso se ofrece el navegador del sistema.
+- Los enlaces `online.php?stream=...` son **páginas web por canal, no URL M3U8 ni transmisiones reproducibles directamente en Media3**. La app no extrae los medios, no evita controles de acceso y no garantiza que los reproductores externos funcionen en Google TV. Se usa una vista web por canal y se ofrece abrir cada página en el navegador instalado.
+- Los 108 enlaces fueron provistos por el usuario; su disponibilidad, permisos de distribución y estabilidad **no fueron verificados**. Agregar un enlace no significa disponer de los derechos sobre la señal.
 - No se pudo verificar la estructura ni la disponibilidad efectiva de `https://tvf90.com/agenda.html` durante esta integración. El sitio web, los derechos de contenido, la calidad y la actualización de los datos dependen de terceros.
 - Se aceptan URLs HTTP para compatibilidad con algunas listas; HTTP **no cifra** datos ni contenido, preferí HTTPS. Las URLs de la lista pueden contener tokens: evitá compartirlas, especialmente en repositorios públicos.
 - La selección de archivos requiere un proveedor de documentos instalado en Google TV; algunas TVs no tienen uno.
