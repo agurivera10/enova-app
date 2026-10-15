@@ -10,5 +10,15 @@
     <string name="only_favorites">Solo favoritos</string>
     <string name="star_channel">☆ Favorito seleccionado</string>
     <string name="empty_state">Agregá una lista M3U para comenzar.</string>
+    <string name="sports_section">⚽ Deportes: canales y agenda online</string>
+    <string name="sports_agenda">Agenda deportiva</string>
+    <string name="sports_channels">Canales web</string>
+    <string name="sports_reload">Actualizar</string>
+    <string name="sports_browser">Abrir en navegador</string>
+    <string name="sports_back">Volver a IPTV</string>
+    <string name="sports_initial">Elegí Agenda o Canales para consultar TVF90.</string>
+    <string name="sports_loading">Cargando página web…</string>
+    <string name="sports_failed">No se pudo cargar TVF90. Comprobá la conexión o abrí la página en el navegador.</string>
+    <string name="sports_blocked">Por seguridad, solo se navega a tvf90.com dentro de la aplicación.</string>
     <string name="channel_logo">Logotipo del canal</string>
 </resources>

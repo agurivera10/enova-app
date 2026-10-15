@@ -10,6 +10,8 @@ Reproductor IPTV **para Google TV / Android TV** desarrollado en Kotlin. Proyect
 - Reproducir canales con AndroidX Media3 (HLS y formatos progresivos compatibles).
 - Guardar la última lista y los favoritos en el dispositivo.
 - Sin servidor propio, cuentas ni canales empaquetados: las opciones sugeridas son solo enlaces externos.
+- Nueva sección **Deportes**: abre `https://tvf90.com/` y `https://tvf90.com/agenda.html` en una vista web dentro de la app, con navegación mediante control remoto, botón de actualización y alternativa para abrir el navegador del televisor.
+- Mientras la sección **Agenda** está visible, vuelve a cargar la página cada **2 minutos**. No es sincronización de datos en tiempo real ni garantiza cambios de agenda; depende de lo que publique el sitio de origen. La vista **Canales** no se recarga automáticamente para no interrumpir la reproducción.
 
 ## Obtener la APK sin Android Studio
 
@@ -58,7 +60,9 @@ El proyecto utiliza Media3 1.8.1 y Glide 4.16.0.
 - La página `https://ip-tv.app/Argentina` es una página web, no una URL M3U directa. No se agrega al selector.
 - El usuario debe elegir una lista y pulsar **Cargar URL** antes de que se descargue; la aplicación no solicita todas las listas automáticamente.
 - Límite de importación: 12 MB de texto M3U y 20.000 canales. Algunas listas extensas pueden superar esos límites, especialmente en televisores con poca memoria.
-- No incluye EPG, DRM, Chromecast, descarga de emisiones, ni acceso a servicios IPTV.
+- No incluye EPG estructurada, DRM, Chromecast ni descarga de emisiones. La nueva agenda deportiva es una **página web externa** y no cruza automáticamente partidos con URLs M3U.
+- La función Deportes no extrae, inspecciona ni reproduce por Media3 las URLs de transmisión de TVF90; muestra su sitio web como tal. Algunas páginas o reproductores externos podrían no funcionar en el WebView de Google TV, y en ese caso se ofrece el navegador del sistema.
+- No se pudo verificar la estructura ni la disponibilidad efectiva de `https://tvf90.com/agenda.html` durante esta integración. El sitio web, los derechos de contenido, la calidad y la actualización de los datos dependen de terceros.
 - Se aceptan URLs HTTP para compatibilidad con algunas listas; HTTP **no cifra** datos ni contenido, preferí HTTPS. Las URLs de la lista pueden contener tokens: evitá compartirlas, especialmente en repositorios públicos.
 - La selección de archivos requiere un proveedor de documentos instalado en Google TV; algunas TVs no tienen uno.
 - Las transmisiones pueden fallar por codecs, DRM, georrestricciones, conectividad, expiración de URLs o configuración de servidores. La aplicación no evita restricciones de acceso.
