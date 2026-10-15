@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="88dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:background="@drawable/channel_row_background">
+    <FrameLayout
+        android:id="@+id/sportsRowArtwork"
+        android:layout_width="95dp"
+        android:layout_height="62dp">
+        <include layout="@layout/channel_artwork"/>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/sportsRowName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+        <TextView
+            android:id="@+id/sportsRowSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="▶"
+        android:textSize="22sp"
+        android:textColor="@color/accent_cyan"/>
+</LinearLayout>

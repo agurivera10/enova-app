@@ -2,6 +2,7 @@ package com.enova.iptvplayer
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.media3.common.MediaItem
@@ -9,6 +10,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import java.net.URI
 
@@ -21,9 +23,29 @@ class PlayerActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_player)
+        immersive()
         playerView = findViewById(R.id.playerView)
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        playerView.useController = true
         title = findViewById(R.id.playerTitle)
         title.text = intent.getStringExtra(EXTRA_NAME).orEmpty()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun immersive() {
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        immersive()
     }
 
     override fun onStart() {
@@ -40,6 +62,11 @@ class PlayerActivity : Activity() {
             exo.addListener(object : Player.Listener {
                 override fun onPlayerError(error: PlaybackException) {
                     title.text = "No se pudo reproducir el canal: " + error.errorCodeName
+                }
+                override fun onPlaybackStateChanged(state: Int) {
+                    if (state == Player.STATE_READY) {
+                        title.postDelayed({ if (!isFinishing) title.visibility = View.GONE }, 3_000L)
+                    }
                 }
             })
             exo.setMediaItem(builder.build())

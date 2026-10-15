@@ -2,104 +2,195 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/bg_app">
     <LinearLayout
+        android:id="@+id/catalogPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="80dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/catalog_title"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
+                android:orientation="vertical">
+                <TextView
+                    style="@style/TvOverline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="● ENOVA  /  SPORTS"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Deportes en vivo"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="32sp"/>
+            </LinearLayout>
             <Button
                 android:id="@+id/catalogAgenda"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/sports_agenda"
-                android:textAllCaps="false"/>
-            <Button
-                android:id="@+id/catalogRefresh"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/sports_reload"
-                android:textAllCaps="false"/>
-            <Button
-                android:id="@+id/catalogExternal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/sports_browser"
-                android:textAllCaps="false"/>
+                style="@style/TvButton.Primary"
+                android:layout_width="185dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="10dp"
+                android:text="◷ Agenda deportiva"/>
             <Button
                 android:id="@+id/catalogBack"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/sports_back"
-                android:textAllCaps="false"/>
+                style="@style/TvButton.Secondary"
+                android:layout_width="145dp"
+                android:layout_height="56dp"
+                android:text="Volver a IPTV"/>
         </LinearLayout>
-        <TextView
-            android:id="@+id/catalogStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:paddingBottom="8dp"
-            android:text="@string/catalog_select"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="320dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:padding="14dp"
                 android:orientation="vertical"
-                android:layout_marginEnd="12dp"
-                android:padding="8dp"
-                android:background="@drawable/panel_background">
+                android:background="@drawable/bg_panel">
+                <TextView
+                    style="@style/TvOverline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="108 CANALES  /  TVF90"/>
                 <EditText
                     android:id="@+id/catalogSearch"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:padding="8dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="7dp"
+                    android:hint="⌕  Buscar ESPN, TyC, Fox Sports…"
+                    android:inputType="text"
                     android:singleLine="true"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
                     android:background="@drawable/input_background"
-                    android:hint="@string/catalog_search"
-                    android:inputType="text"/>
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"/>
                 <ListView
                     android:id="@+id/catalogList"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:background="@color/panel"
                     android:focusable="true"
-                    android:background="@drawable/panel_background"
-                    android:divider="@color/divider"
-                    android:dividerHeight="1dp"/>
+                    android:divider="@color/panel"
+                    android:dividerHeight="6dp"/>
+                <TextView
+                    android:id="@+id/catalogStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="@string/catalog_select"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"/>
             </LinearLayout>
-            <WebView
-                android:id="@+id/catalogWebView"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/panel"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:layout_marginStart="14dp"
+                android:padding="24dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@drawable/bg_panel">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="◉"
+                    android:textSize="100sp"
+                    android:textColor="@color/accent_pink"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TODO EL DEPORTE"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Seleccioná cualquier canal para verlo a pantalla completa."
+                    android:textSize="17sp"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="OK  →  REPRODUCIR"
+                    android:textSize="16sp"
+                    android:textColor="@color/accent_cyan"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
     <FrameLayout
-        android:id="@+id/catalogFullscreen"
+        android:id="@+id/catalogPlayerOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone">
+        <WebView
+            android:id="@+id/catalogWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+        <LinearLayout
+            android:id="@+id/catalogPlayerChrome"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="20dp"
+            android:background="#DB0D1726">
+            <Button
+                android:id="@+id/catalogExitPlayer"
+                style="@style/TvButton.Primary"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="← CANALES"/>
+            <TextView
+                android:id="@+id/catalogPlayerStatus"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Cargando canal…"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"/>
+            <Button
+                android:id="@+id/catalogReloadPlayer"
+                style="@style/TvButton.Secondary"
+                android:layout_width="130dp"
+                android:layout_height="50dp"
+                android:text="Actualizar"/>
+            <Button
+                android:id="@+id/catalogOpenExternal"
+                style="@style/TvButton.Secondary"
+                android:layout_width="175dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="9dp"
+                android:text="Navegador"/>
+        </LinearLayout>
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/catalogHtml5Overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
