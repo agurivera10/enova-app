@@ -8,8 +8,8 @@ Reproductor IPTV **para Google TV / Android TV** desarrollado en Kotlin. Proyect
 - Organizar canales por grupo, filtrar, ver logotipos y marcar favoritos.
 - **Nueva interfaz de Google TV**: home oscura con tarjetas de alto contraste, accesos deportivos y listas M3U **siempre visibles** para navegar con control remoto.
 - Primera apertura: intenta precargar **iptv-org Argentina**. Si no hay red, mostrará un mensaje y podrás seleccionar otra fuente.
-- **Catálogo deportivo con 108 canales**: logos obtenidos en compilación desde la API pública de iptv-org cuando hay una coincidencia confiable; el resto muestra una tarjeta de iniciales. Los logos externos se cargan al ver el canal y pueden dejar de estar disponibles.
-- **Pantalla completa**: ExoPlayer para M3U y visor WebView inmersivo para los enlaces web deportivos. CSS agranda video/iframe visible cuando es posible, pero no se puede forzar reproducción a través de restricciones de terceros.
+- **Catálogo deportivo con 108 canales**: logos obtenidos en compilación desde la API pública de iptv-org cuando hay una coincidencia confiable; el resto muestra una tarjeta de iniciales. Las iniciales se ocultan cuando carga un logo real, evitando superposición; si falla, reaparecen como respaldo.
+- **Pantalla completa y autoplay experimental**: ExoPlayer para M3U y visor WebView inmersivo para enlaces deportivos. Al cargar una página se intenta reproducir automáticamente el video HTML5 accesible, incluido contenido que aparezca después. CSS agranda video/iframe cuando es posible. El autoplay y la reproducción dentro de iframes ajenos **no pueden garantizarse** si el reproductor requiere pulsar Play, un gesto del usuario, acceso autorizado o tiene restricciones del navegador.
 - Navegar con el control remoto (D-pad, Enter y Atrás).
 - Reproducir canales con AndroidX Media3 (HLS y formatos progresivos compatibles).
 - Guardar la última lista y los favoritos en el dispositivo.

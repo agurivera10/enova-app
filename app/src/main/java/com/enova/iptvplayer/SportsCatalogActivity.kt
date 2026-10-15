@@ -126,7 +126,10 @@ class SportsCatalogActivity : Activity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 if (url == "about:blank" || current == null || pageError) return
                 webView.evaluateJavascript(FULLSCREEN_SCRIPT, null)
-                playerStatus.text = (current?.name ?: "Canal") + " · Atrás: volver"
+                // Best-effort HTML5 autoplay on the accessible document only.
+                // Embedded cross-origin players and permission gates may reject play().
+                webView.evaluateJavascript(AUTOPLAY_SCRIPT, null)
+                playerStatus.text = (current?.name ?: "Canal") + " · Inicio automático si está permitido · Atrás: volver"
                 scheduleHideChrome()
             }
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
@@ -295,6 +298,45 @@ class SportsCatalogActivity : Activity() {
     }
 
     companion object {
+        /**
+         * Solo solicita play() a elementos HTML5 accesibles dentro de la página.
+         * Si el navegador exige gesto o el reproductor está en un iframe ajeno,
+         * el rechazo se respeta: no se simulan clicks ni se eluden restricciones.
+         */
+        private val AUTOPLAY_SCRIPT = """
+            (function() {
+              if (window.__enovaAutoplayInstalled) return;
+              window.__enovaAutoplayInstalled = true;
+              function playAvailable() {
+                document.querySelectorAll('video').forEach(function(video) {
+                  try {
+                    video.autoplay = true;
+                    video.setAttribute('autoplay', '');
+                    video.playsInline = true;
+                    video.setAttribute('playsinline', '');
+                    if (video.paused) {
+                      var result = video.play();
+                      if (result && typeof result.catch === 'function') {
+                        result.catch(function() {});
+                      }
+                    }
+                  } catch (ignored) {}
+                });
+              }
+              // Algunos sitios crean el elemento video después de la carga inicial.
+              if (window.MutationObserver && document.documentElement) {
+                new MutationObserver(function() { playAvailable(); })
+                  .observe(document.documentElement, {childList:true, subtree:true});
+              }
+              document.addEventListener('loadedmetadata', playAvailable, true);
+              document.addEventListener('canplay', playAvailable, true);
+              playAvailable();
+              [600, 1800, 4000, 8000].forEach(function(delay) {
+                setTimeout(playAvailable, delay);
+              });
+            })();
+        """.trimIndent()
+
         private val FULLSCREEN_SCRIPT = """
             (function() {
               try {
