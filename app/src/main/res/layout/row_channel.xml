@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="82dp"
-    android:orientation="horizontal"
+    android:layout_height="80dp"
     android:gravity="center_vertical"
-    android:paddingHorizontal="14dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
     android:background="@drawable/channel_row_background">
-    <ImageView
-        android:id="@+id/channelLogo"
-        android:layout_width="66dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/channel_logo"
-        android:src="@drawable/ic_tv"
-        android:scaleType="fitCenter" />
+    <FrameLayout
+        android:id="@+id/channelArtwork"
+        android:layout_width="100dp"
+        android:layout_height="62dp">
+        <include layout="@layout/channel_artwork"/>
+    </FrameLayout>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="14dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/channelName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
             android:textSize="20sp"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:ellipsize="end"
+            android:singleLine="true"/>
         <TextView
             android:id="@+id/channelGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_secondary"
             android:textSize="14sp"
-            android:singleLine="true" />
+            android:textColor="@color/text_secondary"
+            android:ellipsize="end"
+            android:singleLine="true"/>
     </LinearLayout>
     <TextView
         android:id="@+id/channelStar"
-        android:layout_width="36dp"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/highlight"
-        android:textSize="27sp" />
+        android:textColor="@color/accent_gold"
+        android:textSize="26sp"/>
+    <TextView
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:text="▶"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/accent_cyan"/>
 </LinearLayout>

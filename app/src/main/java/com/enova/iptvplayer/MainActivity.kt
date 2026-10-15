@@ -2,17 +2,16 @@ package com.enova.iptvplayer
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
+import android.widget.ProgressBar
+import android.widget.ArrayAdapter
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -20,11 +19,12 @@ import java.net.URI
 import java.net.URL
 import java.util.concurrent.Executors
 
+/** TV-first dashboard with visible playlist sources, live channels and sports. */
 class MainActivity : Activity() {
     private val worker = Executors.newSingleThreadExecutor()
     private lateinit var store: PlaylistStore
+    private lateinit var logos: LogoCatalog
     private lateinit var urlField: EditText
-    private lateinit var presetSpinner: Spinner
     private lateinit var importButton: Button
     private lateinit var fileButton: Button
     private lateinit var favoritesButton: Button
@@ -32,17 +32,21 @@ class MainActivity : Activity() {
     private lateinit var groups: Spinner
     private lateinit var list: ListView
     private lateinit var status: TextView
+    private lateinit var sourceStatus: TextView
+    private lateinit var channelCount: TextView
+    private lateinit var progress: ProgressBar
     private lateinit var adapter: ChannelAdapter
     private var channels = emptyList<Channel>()
     private var visibleChannels = emptyList<Channel>()
     private var onlyFavorites = false
+    private var loading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         store = PlaylistStore(this)
+        logos = LogoCatalog(this)
         urlField = findViewById(R.id.playlistUrl)
-        presetSpinner = findViewById(R.id.playlistPresets)
         importButton = findViewById(R.id.importUrl)
         fileButton = findViewById(R.id.importFile)
         favoritesButton = findViewById(R.id.onlyFavorites)
@@ -50,44 +54,52 @@ class MainActivity : Activity() {
         groups = findViewById(R.id.groupSpinner)
         list = findViewById(R.id.channelList)
         status = findViewById(R.id.status)
-        adapter = ChannelAdapter(this) { channel -> channel.streamUrl in store.favorites() }
+        sourceStatus = findViewById(R.id.sourceStatus)
+        channelCount = findViewById(R.id.channelCount)
+        progress = findViewById(R.id.loadingProgress)
+        adapter = ChannelAdapter(this, { it.streamUrl in store.favorites() }, logos)
         list.adapter = adapter
         channels = store.loadChannels()
         urlField.setText(store.lastSource())
-        presetSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item,
-            PlaylistPresets.entries.map { it.name }).also {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-        presetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val preset = PlaylistPresets.entries.getOrNull(position) ?: return
-                if (preset.url.isNotBlank()) {
-                    urlField.setText(preset.url)
-                    status.text = if (preset.isUnverified)
-                        "Fuente externa sin verificar. Revisá los permisos y pulsá Cargar URL."
-                    else "Fuente seleccionada. Pulsá Cargar URL para leer los canales."
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        sourceStatus.text = if (channels.isEmpty()) {
+            "Elegí una fuente para comenzar"
+        } else {
+            "Fuente: " + displaySource(store.lastSource())
         }
         rebuildGroups()
 
+        val ids = listOf(
+            R.id.presetArgentina,
+            R.id.presetGlobal,
+            R.id.presetDeportes,
+            R.id.presetLista1,
+            R.id.presetLista
+        )
+        PlaylistPresets.entries.drop(1).zip(ids).forEach { (source, id) ->
+            findViewById<Button>(id).setOnClickListener {
+                urlField.setText(source.url)
+                importUrl(source.url)
+            }
+        }
+        importButton.setOnClickListener { importUrl(urlField.text.toString().trim()) }
+        fileButton.setOnClickListener { chooseFile() }
         findViewById<Button>(R.id.openSports).setOnClickListener {
             startActivity(Intent(this, SportsCatalogActivity::class.java))
         }
-        importButton.setOnClickListener { importUrl() }
-        fileButton.setOnClickListener { chooseFile() }
+        findViewById<Button>(R.id.openAgenda).setOnClickListener {
+            startActivity(Intent(this, SportsActivity::class.java))
+        }
         favoritesButton.setOnClickListener {
             onlyFavorites = !onlyFavorites
-            favoritesButton.text = if (onlyFavorites) "Mostrar todos" else "Solo favoritos"
+            favoritesButton.text = if (onlyFavorites) "★ Mostrar todos" else "★ Favoritos"
             updateList()
         }
         starButton.setOnClickListener {
-            val selected = list.selectedItemPosition
-            if (selected !in visibleChannels.indices) {
-                showMessage("Seleccioná un canal con las flechas y luego pulsá ☆.")
+            val channel = visibleChannels.getOrNull(list.selectedItemPosition)
+            if (channel == null) {
+                showMessage("Seleccioná un canal en la lista.")
             } else {
-                toggleFavorite(visibleChannels[selected])
+                toggleFavorite(channel)
             }
         }
         groups.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -108,23 +120,32 @@ class MainActivity : Activity() {
             true
         }
         updateList()
+        if (channels.isEmpty() && store.lastSource().isBlank()) {
+            // First run: start with the small Argentina playlist, but don't block navigation.
+            importUrl(PlaylistPresets.entries[2].url)
+        }
     }
 
-    private fun importUrl() {
-        val source = urlField.text.toString().trim()
+    private fun displaySource(source: String): String {
+        return PlaylistPresets.entries.firstOrNull { it.url == source }?.name
+            ?: if (source.isBlank()) "Archivo local" else "URL personalizada"
+    }
+
+    private fun importUrl(source: String) {
+        if (loading) return
         val scheme = try { URI(source).scheme?.lowercase() } catch (_: Exception) { null }
         if (scheme != "https" && scheme != "http") {
-            showMessage("Ingresá una URL que empiece con https:// o http://.")
+            showMessage("La dirección debe empezar con https:// o http://")
             return
         }
-        importPlaylist(source) {
+        fetchPlaylist(source) {
             val connection = URL(source).openConnection() as HttpURLConnection
             connection.connectTimeout = 12000
-            connection.readTimeout = 20000
-            connection.setRequestProperty("User-Agent", "EnovaIPTV/0.1")
+            connection.readTimeout = 25000
+            connection.setRequestProperty("User-Agent", "EnovaIPTV/0.2")
             try {
                 if (connection.responseCode !in 200..299) {
-                    throw IllegalStateException("HTTP " + connection.responseCode)
+                    throw IllegalStateException("Respuesta HTTP " + connection.responseCode)
                 }
                 connection.inputStream.use(::readLimited)
             } finally {
@@ -134,6 +155,7 @@ class MainActivity : Activity() {
     }
 
     private fun chooseFile() {
+        if (loading) return
         val picker = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
@@ -141,44 +163,54 @@ class MainActivity : Activity() {
         try {
             startActivityForResult(picker, FILE_REQUEST)
         } catch (_: Exception) {
-            showMessage("No hay un selector de archivos disponible en este televisor.")
+            showMessage("Este televisor no tiene un selector de archivos compatible.")
         }
     }
 
-    @Deprecated("API tradicional compatible con Google TV")
+    @Deprecated("Selector de archivos compatible con Google TV")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != FILE_REQUEST || resultCode != RESULT_OK) return
         val document = data?.data ?: return
-        importPlaylist(null) {
+        fetchPlaylist(null) {
             contentResolver.openInputStream(document)?.use(::readLimited)
                 ?: throw IllegalStateException("No se pudo leer el archivo.")
         }
     }
 
-    private fun importPlaylist(baseUrl: String?, read: () -> String) {
+    private fun fetchPlaylist(source: String?, read: () -> String) {
+        if (loading) return
+        loading = true
         importButton.isEnabled = false
         fileButton.isEnabled = false
-        showMessage("Leyendo lista M3U…")
+        progress.visibility = View.VISIBLE
+        sourceStatus.text = "Conectando con la fuente…"
+        showMessage("Descargando y organizando canales…")
         worker.execute {
             val result = runCatching {
-                val parsed = M3uParser.parse(read(), baseUrl)
-                require(parsed.isNotEmpty()) { "No se encontraron canales HTTP(S) válidos." }
-                require(parsed.size <= 20000) { "La lista tiene demasiados canales (máximo 20.000)." }
+                val parsed = M3uParser.parse(read(), source)
+                require(parsed.isNotEmpty()) { "La lista no tiene canales HTTP(S) válidos." }
+                require(parsed.size <= 30000) { "La lista tiene demasiados canales (máximo 30.000)." }
                 parsed
             }
             runOnUiThread {
+                loading = false
                 importButton.isEnabled = true
                 fileButton.isEnabled = true
-                result.onSuccess {
-                    channels = it
-                    store.saveChannels(it)
-                    store.saveSource(baseUrl.orEmpty())
-                    if (baseUrl == null) urlField.setText("")
+                progress.visibility = View.GONE
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                result.onSuccess { parsed ->
+                    channels = parsed
+                    store.saveChannels(parsed)
+                    store.saveSource(source.orEmpty())
                     rebuildGroups()
-                    showMessage("Lista cargada: " + it.size + " canales. OK para reproducir.")
-                }.onFailure {
-                    showMessage("No se pudo cargar la lista: " + (it.message ?: "Error desconocido"))
+                    sourceStatus.text = "✓ " + displaySource(source.orEmpty()) +
+                        " · " + parsed.size + " señales"
+                    showMessage("Lista lista. Elegí un canal y presioná OK para verlo.")
+                }.onFailure { error ->
+                    sourceStatus.text = "No se pudo cargar la fuente"
+                    showMessage((error.message ?: "Error de conexión") +
+                        " · Probá otra lista.")
                 }
             }
         }
@@ -202,19 +234,18 @@ class MainActivity : Activity() {
                 (!onlyFavorites || channel.streamUrl in favorites)
         }
         adapter.submit(visibleChannels)
-        if (visibleChannels.isEmpty()) {
-            status.text = if (channels.isEmpty()) "Agregá una URL o importá un archivo M3U para empezar."
-                          else "No hay canales en este filtro."
-        } else {
-            status.text = visibleChannels.size.toString() + " canales · Enter: reproducir · Mantener OK: favorito"
+        channelCount.text = visibleChannels.size.toString() + " CANALES"
+        status.text = when {
+            channels.isEmpty() && !loading -> "Elegí una lista M3U del panel izquierdo."
+            visibleChannels.isEmpty() -> "No hay canales con este filtro."
+            else -> "OK: reproducir · OK sostenido: favorito · Atrás: volver"
         }
     }
 
     private fun toggleFavorite(channel: Channel) {
-        val isFavorite = store.toggleFavorite(channel.streamUrl)
+        val added = store.toggleFavorite(channel.streamUrl)
         updateList()
-        showMessage(if (isFavorite) "Agregado a favoritos: " + channel.name
-                    else "Quitado de favoritos: " + channel.name)
+        showMessage((if (added) "★ Favorito: " else "Quitado: ") + channel.name)
     }
 
     private fun showMessage(message: String) {
@@ -228,7 +259,7 @@ class MainActivity : Activity() {
 
     companion object {
         private const val FILE_REQUEST = 200
-        private const val MAX_PLAYLIST_BYTES = 12 * 1024 * 1024
+        private const val MAX_PLAYLIST_BYTES = 18 * 1024 * 1024
 
         private fun readLimited(stream: InputStream): String {
             val output = ByteArrayOutputStream()
@@ -237,7 +268,7 @@ class MainActivity : Activity() {
                 val size = stream.read(chunk)
                 if (size < 0) break
                 if (output.size() + size > MAX_PLAYLIST_BYTES) {
-                    throw IllegalStateException("La lista supera el máximo de 12 MB.")
+                    throw IllegalStateException("La lista supera los 18 MB permitidos.")
                 }
                 output.write(chunk, 0, size)
             }

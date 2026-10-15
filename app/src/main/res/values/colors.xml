@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#0B1020</color>
-    <color name="panel">#182338</color>
-    <color name="focus">#305C81</color>
-    <color name="divider">#34465A</color>
-    <color name="highlight">#FBD66A</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#CFD7E3</color>
+    <color name="background">#090E1B</color>
+    <color name="panel">#121C31</color>
+    <color name="surface_raised">#1B2943</color>
+    <color name="focus">#24527D</color>
+    <color name="divider">#30415B</color>
+    <color name="highlight">#F5CF67</color>
+    <color name="accent_cyan">#5FE8F6</color>
+    <color name="accent_pink">#ED3F81</color>
+    <color name="accent_gold">#F5CF67</color>
+    <color name="text_primary">#F5F9FF</color>
+    <color name="text_secondary">#9DAEC9</color>
 </resources>

@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
+import android.widget.FrameLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
 
 class ChannelAdapter(
     private val context: Context,
-    private val isFavorite: (Channel) -> Boolean
+    private val isFavorite: (Channel) -> Boolean,
+    private val logos: LogoCatalog
 ) : BaseAdapter() {
-    private var channels: List<Channel> = emptyList()
+    private var channels = emptyList<Channel>()
 
     fun submit(values: List<Channel>) {
         channels = values
@@ -30,16 +30,8 @@ class ChannelAdapter(
         row.findViewById<TextView>(R.id.channelName).text = channel.name
         row.findViewById<TextView>(R.id.channelGroup).text = channel.group
         row.findViewById<TextView>(R.id.channelStar).text = if (isFavorite(channel)) "★" else "☆"
-        val logo = row.findViewById<ImageView>(R.id.channelLogo)
-        if (channel.logo.isNullOrBlank()) {
-            Glide.with(context).clear(logo)
-            logo.setImageResource(R.drawable.ic_tv)
-        } else {
-            Glide.with(context).load(channel.logo)
-                .placeholder(R.drawable.ic_tv)
-                .error(R.drawable.ic_tv)
-                .into(logo)
-        }
+        ChannelArtwork.bind(context, row.findViewById<FrameLayout>(R.id.channelArtwork),
+            logos.forIptv(channel), channel.name)
         return row
     }
 }
