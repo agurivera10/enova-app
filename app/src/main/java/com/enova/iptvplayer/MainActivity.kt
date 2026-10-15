@@ -24,6 +24,7 @@ class MainActivity : Activity() {
     private val worker = Executors.newSingleThreadExecutor()
     private lateinit var store: PlaylistStore
     private lateinit var urlField: EditText
+    private lateinit var presetSpinner: Spinner
     private lateinit var importButton: Button
     private lateinit var fileButton: Button
     private lateinit var favoritesButton: Button
@@ -41,6 +42,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         store = PlaylistStore(this)
         urlField = findViewById(R.id.playlistUrl)
+        presetSpinner = findViewById(R.id.playlistPresets)
         importButton = findViewById(R.id.importUrl)
         fileButton = findViewById(R.id.importFile)
         favoritesButton = findViewById(R.id.onlyFavorites)
@@ -52,6 +54,22 @@ class MainActivity : Activity() {
         list.adapter = adapter
         channels = store.loadChannels()
         urlField.setText(store.lastSource())
+        presetSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item,
+            PlaylistPresets.entries.map { it.name }).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        presetSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val preset = PlaylistPresets.entries.getOrNull(position) ?: return
+                if (preset.url.isNotBlank()) {
+                    urlField.setText(preset.url)
+                    status.text = if (preset.isUnverified)
+                        "Fuente externa sin verificar. Revisá los permisos y pulsá Cargar URL."
+                    else "Fuente seleccionada. Pulsá Cargar URL para leer los canales."
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
         rebuildGroups()
 
         importButton.setOnClickListener { importUrl() }
@@ -143,7 +161,7 @@ class MainActivity : Activity() {
             val result = runCatching {
                 val parsed = M3uParser.parse(read(), baseUrl)
                 require(parsed.isNotEmpty()) { "No se encontraron canales HTTP(S) válidos." }
-                require(parsed.size <= 15000) { "La lista tiene demasiados canales." }
+                require(parsed.size <= 20000) { "La lista tiene demasiados canales (máximo 20.000)." }
                 parsed
             }
             runOnUiThread {
@@ -207,7 +225,7 @@ class MainActivity : Activity() {
 
     companion object {
         private const val FILE_REQUEST = 200
-        private const val MAX_PLAYLIST_BYTES = 5 * 1024 * 1024
+        private const val MAX_PLAYLIST_BYTES = 12 * 1024 * 1024
 
         private fun readLimited(stream: InputStream): String {
             val output = ByteArrayOutputStream()
@@ -216,7 +234,7 @@ class MainActivity : Activity() {
                 val size = stream.read(chunk)
                 if (size < 0) break
                 if (output.size() + size > MAX_PLAYLIST_BYTES) {
-                    throw IllegalStateException("La lista supera el máximo de 5 MB.")
+                    throw IllegalStateException("La lista supera el máximo de 12 MB.")
                 }
                 output.write(chunk, 0, size)
             }

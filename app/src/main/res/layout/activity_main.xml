@@ -22,6 +22,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+        <TextView
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_presets"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"/>
+        <Spinner
+            android:id="@+id/playlistPresets"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/playlist_presets"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
         <EditText
             android:id="@+id/playlistUrl"

@@ -3,6 +3,7 @@
     <string name="app_name">Enova IPTV</string>
     <string name="subtitle">Tus listas M3U · Google TV</string>
     <string name="url_hint">Pegá la URL de tu lista M3U</string>
+    <string name="playlist_presets">Listas recomendadas</string>
     <string name="load_url">Cargar URL</string>
     <string name="load_file">Abrir archivo</string>
     <string name="categories">Categorías</string>
