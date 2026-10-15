@@ -20,6 +20,16 @@ Reproductor IPTV **para Google TV / Android TV** desarrollado en Kotlin. Proyect
 
 > Estado: el proyecto compiló correctamente en GitHub Actions y genera una APK de depuración. **Aún está pendiente probarlo en un Google TV real**.
 
+## Descarga directa para navegador de Google TV
+
+**[Descargar Enova-IPTV.apk](https://github.com/agurivera10/enova-app/releases/latest/download/Enova-IPTV.apk)**
+
+La APK se publica automáticamente en **GitHub Releases** tras aprobarse las pruebas y la compilación de la rama `main`. El enlace siempre apunta a la última publicación completa. También podés entrar a [Releases](https://github.com/agurivera10/enova-app/releases/latest) para ver la versión.
+
+En Google TV, abrí ese enlace desde el navegador o desde una app de descarga confiable. Si el navegador descarga el archivo, abrilo con un administrador de archivos y autorizá la instalación desde esa aplicación cuando Google TV lo solicite. La TV debe tener un proveedor capaz de instalar APK; algunos navegadores bloquean los archivos .apk. Si no funciona la descarga directa, usá ADB desde Windows.
+
+> **Es una compilación de prueba (`debug`)**, firmada con una clave de desarrollo generada por GitHub Actions. No es una publicación final ni apta para Play Store, y **las builds futuras pueden tener otra firma**, por lo que quizá debas desinstalar la versión anterior antes de instalar la nueva (esto borra listas y favoritos guardados). Falta validar reproducción y navegación en una Enova real.
+
 ## Instalar en Google TV
 
 En tu televisor Enova con Google TV, habilitá las opciones de desarrollador y la depuración ADB (la ubicación depende del modelo). Desde una PC con `adb`:
