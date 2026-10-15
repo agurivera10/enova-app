@@ -18,7 +18,7 @@ Reproductor IPTV **para Google TV / Android TV** desarrollado en Kotlin. Proyect
 3. Cuando termine en verde, descargá el artifact **enova-iptv-debug-apk**.
 4. Descomprimí el ZIP y obtené `app-debug.apk`.
 
-> Estado: código fuente inicial; la APK todavía debe compilarse y probarse en un Google TV real. Una compilación exitosa en Actions confirmará la compatibilidad de dependencias pero no reemplaza la prueba en hardware.
+> Estado: el proyecto compiló correctamente en GitHub Actions y genera una APK de depuración. **Aún está pendiente probarlo en un Google TV real**.
 
 ## Instalar en Google TV
 
