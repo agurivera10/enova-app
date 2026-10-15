@@ -27,8 +27,13 @@ jobs:
         with:
           gradle-version: '8.11.1'
       - name: Install Android platform 35
+        shell: bash
         run: |
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKMANAGER="$(find "$SDK_DIR/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
       - name: Test and build
         run: gradle --no-daemon testDebugUnitTest assembleDebug
       - name: Upload debug APK
