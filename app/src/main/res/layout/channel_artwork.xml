@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/panel">
+    <TextView
+        android:id="@+id/artworkMonogram"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="TV"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="#FFFFFFFF"
+        android:gravity="center"/>
+    <ImageView
+        android:id="@+id/artworkImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/channel_logo"
+        android:visibility="gone"/>
+</FrameLayout>
